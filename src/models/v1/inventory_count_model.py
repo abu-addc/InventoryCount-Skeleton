@@ -12,6 +12,7 @@ class InventoryCount(object):
         self.inventory_location : str = None
         self.created_by : User = None
         self.date_created : datetime = None
+        self.due_date : datetime = None
         self.events = []
         self.participants = []
         self.items_counted = []
