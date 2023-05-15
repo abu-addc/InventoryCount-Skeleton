@@ -1,5 +1,10 @@
 import os
 
+from dotenv.main import load_dotenv
+import os
+
+load_dotenv()
+
 '''DATABASE'''
 CONST_MONGO_URL = os.environ.get('CONST_MONGO_URL')
 CONST_DATABASE = os.environ.get('CONST_DATABASE')

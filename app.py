@@ -2,19 +2,6 @@ from flask import Flask, render_template, jsonify
 import src.globalvars as globalvars
 from flask_cors import CORS
 
-from pymongo import MongoClient
-from dotenv.main import load_dotenv
-import os
-
-load_dotenv()
-
-MONGO_URI = os.environ['CONST_MONGO_URL']
-
-client = MongoClient(MONGO_URI)
-
-print(MONGO_URI)
-print("it reached here")
-
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
 
@@ -24,7 +11,7 @@ CORS(app, supports_credentials= True)
 
 @app.route("/")
 def index():
-    return MONGO_URI
+    return globalvars.CONST_MONGO_URL
 
 
 @app.errorhandler(404)
