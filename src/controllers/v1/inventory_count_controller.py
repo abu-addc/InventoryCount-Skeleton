@@ -29,4 +29,21 @@ def add_inventory(req):
 def update_inventory(req, id):
     ### loop through the key, values of the request's body
     ### verify the key, then call the appropriate method from the model
+    
+    # for key, value in request:
+        
+    #     if key == "status":
+    #         inventory.updateStatus()
+            
+    #     if key == "dueDate":
+    #         inventory.update_dueDate()   
+            
+    #     if key == "participant":
+                 
+    
+    # {
+    #     "status": "Done",
+    #     "dueDate": "March 5th, 2023",
+    #     "event": Event()
+    # }
     pass
