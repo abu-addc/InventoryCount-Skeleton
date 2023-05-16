@@ -27,5 +27,6 @@ def add_inventory(req):
         
 
 def update_inventory(req, id):
-    ### verify the body of the request so we know what we're updating
+    ### loop through the key, values of the request's body
+    ### verify the key, then call the appropriate method from the model
     pass

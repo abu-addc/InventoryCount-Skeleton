@@ -19,12 +19,10 @@ def add_inventory(id):
 
 @inventory_count_v1.route('/v1/inventory/<id>', methods=['PUT'])
 ### auth decorator method
-### method to verify the body of the request, so we know which function to use
 def update_inventory(id):
     response = update_inventory(req = req)
     pass
 
-### do we define different methods for the different endpoints?
 
 
 
