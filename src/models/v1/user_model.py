@@ -16,4 +16,8 @@ class User(object):
         
     
     ### functions to retrieve, update, delete users
-        
+    def login(self):
+        pass
+    
+    def signup(self):
+        pass

@@ -109,6 +109,72 @@ class InventoryCount(object):
         except Exception as e:
             raise ValueError('Error updating quantity counted from the inventory with the specified userID:' f'{e}')
 
+    ## Add Participant to an inventory
+    def add_participant(self, user : User):
+        try:
+            dataBaseConnection = MongoDBConnection.dataBase(                
+            )[globalvars.INVENTORY_COUNT_COLLECTION]
+
+            inventoryCount = InventoryCount()
+            inventoryFound = dataBaseConnection.find_one({"inventory_id": self.inventory_id})
+
+            if not inventoryFound:
+                return inventoryCount
+            
+            result = dataBaseConnection.update_one(
+                {"inventory_id": self.inventory_id},
+                {"$push": {
+                    "participants": {
+                        "user_id": user.user_id,
+                        "username": user.username,
+                        "email": user.email
+                    }
+                }}
+            )
+        
+            return Responses.SUCCESS
+        except Exception as e:
+            raise ValueError('Error adding participant:' f'{e}')
+        
+    ## Add Event to an inventory's list of events
+    def add_event(self, event : Event):
+        try:
+            dataBaseConnection = MongoDBConnection.dataBase(                
+            )[globalvars.INVENTORY_COUNT_COLLECTION]
+
+            inventoryCount = InventoryCount()
+            inventoryFound = dataBaseConnection.find_one({"inventory_id": self.inventory_id})
+
+            if not inventoryFound:
+                return inventoryCount
+            
+            result = dataBaseConnection.update_one(
+                {"inventory_id": self.inventory_id},
+                {"$push": {
+                    "events": {
+                        "event_type": event.event_type,
+                        "user": event.user.email,
+                        "event_time": event.event_time
+                    }
+                }}
+            )
+        
+            return Responses.SUCCESS
+        except Exception as e:
+            raise ValueError('Error adding event to list of events:' f'{e}')
+        
+    ## Add new inventory to collection
+    def add_event(self):
+        try:
+            dataBaseConnection = MongoDBConnection.dataBase(                
+            )[globalvars.INVENTORY_COUNT_COLLECTION]
+            
+            
+
+            
+        except Exception as e:
+            raise ValueError('Error adding inventory to collection:' f'{e}')
+
 
         
         
