@@ -169,9 +169,11 @@ class InventoryCount(object):
             dataBaseConnection = MongoDBConnection.dataBase(                
             )[globalvars.INVENTORY_COUNT_COLLECTION]
             
-            
+            new_inventory = { } 
+        
+            result = dataBaseConnection.insert_one(new_inventory)
 
-            
+            return Responses.SUCCESS
         except Exception as e:
             raise ValueError('Error adding inventory to collection:' f'{e}')
 
