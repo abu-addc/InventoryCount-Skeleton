@@ -24,4 +24,63 @@ class User(object):
         pass
     
     def signup(self):
-        pass
+        
+        '''
+        in the body of the request we need this information:  
+        "users": {
+                        "username": user.username,
+                        "password": user.password,
+                        "email": user.email,
+                        "name": user.name,
+                        "job_title": user.job_title,
+                        "phone_number": user.phone_number
+                    }
+       
+        '''
+        try:
+            
+            dataBaseConnection = MongoDBConnection.dataBase(                
+            )[globalvars.USER_COLLECTION]
+            
+            
+            # Check if the email already exists in the database (--we should ask Product Team--)
+            existing_user = dataBaseConnection.find_one({"email": self.email})
+            if existing_user:
+                return ValueError("Username already exists.")
+
+            # Create a new user document
+            user_document = {
+                "username": self.username,
+                "password": self.password,
+                "email": self.email,
+                "name": self.name,
+                "job_title": self.job_title,
+                "phone_number": self.phone_number,
+                }
+
+            
+            # Insert the user document into the database
+            result = dataBaseConnection.insert_one(user_document)
+
+            if result:
+                return Responses.SUCCESS
+            else:
+                return Responses.FAIL
+
+        except Exception as e:
+            raise ValueError('Error adding new User:' f'{e}')
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+       
