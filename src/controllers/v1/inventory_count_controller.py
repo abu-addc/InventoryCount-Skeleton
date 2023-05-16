@@ -20,13 +20,13 @@ def add_inventory(req):
         inventoryToAdd.inventory_id = generate_new_inventory_uuid()
         inventoryToAdd.createdAt: datetime = datetime.now()
 
-        inventoryToAdd.add()
+        inventoryToAdd.add_inventory()
         return [Responses.SUCESS] 
     except Exception as e:
         raise Responses.EXCEPTION
         
 
-def update_inventory(id, request_body):
+def update_inventories(id, request_body):
     try:
         inventory_to_update = InventoryCount()
         #inventory_to_update = inventory_to_update.find_by_inventory_id(id)

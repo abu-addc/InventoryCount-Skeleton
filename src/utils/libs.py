@@ -7,6 +7,12 @@ def generate_new_inventory_uuid() -> str :
   return inventoryId
 
 
+def generate_new_user_uuid() -> str :
+  userId = str(uuid.uuid4().hex)
+
+  return userId
+
+
 
 def generate_hash_password(password) -> str:
   salt = bcrypt.gensalt()
