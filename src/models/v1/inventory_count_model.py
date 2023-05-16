@@ -164,7 +164,7 @@ class InventoryCount(object):
             raise ValueError('Error adding event to list of events:' f'{e}')
         
     ## Add new inventory to collection
-    def add_event(self):
+    def add_inventory(self):
         try:
             dataBaseConnection = MongoDBConnection.dataBase(                
             )[globalvars.INVENTORY_COUNT_COLLECTION]
