@@ -7,7 +7,7 @@ from src.utils.responses import Responses
 
 
 def add_inventory(req):
-    try: 
+    try:
         validationList = []
         
         inventoryToAdd = InventoryCount()
@@ -27,4 +27,5 @@ def add_inventory(req):
         
 
 def update_inventory(req, id):
+    ### verify the body of the request so we know what we're updating
     pass
