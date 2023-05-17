@@ -19,6 +19,9 @@ def add_inventory(req):
         
         inventoryToAdd.inventory_id = generate_new_inventory_uuid()
         inventoryToAdd.createdAt: datetime = datetime.now()
+        inventoryToAdd.name = req["name"]
+        inventoryToAdd.inventory_location = req["inventory_location"]
+        ## what else is sent in the request?
 
         inventoryToAdd.add_inventory()
         return [Responses.SUCESS] 

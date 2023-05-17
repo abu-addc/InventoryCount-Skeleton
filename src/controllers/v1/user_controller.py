@@ -5,7 +5,9 @@ from src.utils.libs import generate_new_user_uuid
 
 from src.utils.responses import Responses
 
-def add_user(req):
+
+## Abu: Using body request, we can set the properties of the user
+def add_user(request_body):
     try:
         validationList = []
         

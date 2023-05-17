@@ -169,7 +169,12 @@ class InventoryCount(object):
             dataBaseConnection = MongoDBConnection.dataBase(                
             )[globalvars.INVENTORY_COUNT_COLLECTION]
             
-            new_inventory = { } 
+            new_inventory = { 
+                "inventory_id": self.inventory_id,
+                "name": self.name,
+                "created_by" : self.created_by,
+                "inventory_location": self.inventory_location                 
+            } 
         
             result = dataBaseConnection.insert_one(new_inventory)
 
