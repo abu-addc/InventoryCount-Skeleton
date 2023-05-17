@@ -6,11 +6,16 @@ from src.utils.libs import generate_new_inventory_uuid
 from src.utils.responses import Responses
 
 
+def fetch_inventory(inventory_id):
+    pass
+
 def add_inventory(req):
     try:
         validationList = []
         
         inventoryToAdd = InventoryCount()
+        sku = req.get('sku', None)
+        quantity_counted = req.get('quantity_counted', None)
         
         ## validationList = InventoryCount.validate_fields(req = req)
         
@@ -24,6 +29,7 @@ def add_inventory(req):
         ## what else is sent in the request?
 
         inventoryToAdd.add_inventory()
+        inventoryToAdd.update_quantity_counted(sku, quantity_counted)
         return [Responses.SUCESS] 
     except Exception as e:
         raise Responses.EXCEPTION

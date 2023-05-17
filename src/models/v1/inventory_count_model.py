@@ -76,14 +76,16 @@ class InventoryCount(object):
             raise Responses.EXCEPTION
         
     ## To update a quantity counted from the inventory with the specified SKU
-    def update_quatity_counted_base_on_sku(self):
+    def update_quatity_counted_base_on_sku(self, sku, quantity_counted):
         try:
             dataBaseConnection = MongoDBConnection.dataBase(                
             )[globalvars.INVENTORY_COUNT_COLLECTION]
             
+            listOfItems = []
+            
             for item in self.items_counted:
-                sku = item['sku']
-                quantity_counted = item['quantity_counted']
+                sku = item.sku
+                quantity_counted = item.quantity_counted
                 filter = {"inventory_id": self.inventory_id, "items_counted.sku": sku}
                 update = {"$set": {"items_counted.$.quantity_counted": quantity_counted}}
                 dataBaseConnection.update_one(filter, update)

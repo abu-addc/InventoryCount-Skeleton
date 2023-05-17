@@ -6,11 +6,19 @@ from src.utils.responses import Responses
 
 inventory_count_v1 = Blueprint('inventory_count_v1', __name__)
 
-@inventory_count_v1.route('/v1/inventory/<id>', methods=['GET'])
+### Returns one inventory based on the inventory's id
+@inventory_count_v1.route('/v1/inventory/<inventory_id>', methods=['GET'])
 ### auth decorator method
-def get_inventory(id):
+def get_inventory(inventory_id):
     pass
 
+### Returns the loggedInUser's list of inventories
+@inventory_count_v1.route('/v1/inventories/<user_id>', methods=['GET'])
+### auth decorator method
+def get_inventory(user_id):
+    pass
+
+### add a new inventory
 @inventory_count_v1.route('/v1/inventory/', methods=['POST'])
 ### auth decorator method
 def add_inventory(id):
@@ -30,6 +38,7 @@ def add_inventory(id):
     except Exception as e:
         return jsonify({'code': Responses.EXCEPTION.value}), 500
     
+### update an existing inventory    
 @inventory_count_v1.route('/v1/inventory/<id>', methods=['PUT'])
 ### auth decorator method
 def update_inventory(id):
