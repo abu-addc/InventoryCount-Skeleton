@@ -60,7 +60,26 @@ def update_inventory(id):
     except Exception as e:
         return jsonify({'code': Responses.EXCEPTION.value}), 500
         
-    
+    ### update inventory_quantity_counted 
+    @inventory_count_v1.route('/v1/inventoryCount/<inventory_id>', methods=['PUT'])
+    ### auth decorator method
+    def update_quantity_counted(inventory_id):
+        try:
+            #req = json.loads(request.data)
+            inventory_id = request.args.to_dict()
+            request_body = request.get_json()
+            
+            response = update_quantity_counted(inventory_id, request_body)
+            
+            if response[0] == Responses.FAIL:
+                return jsonify({'result': Responses.FAIL.name, 'code': Responses.FAIL.value, "data": response[1]}), 400
+                
+            if response[0] == Responses.REQUIRED_FIELDS_MISSING:
+                return jsonify({'result': Responses.REQUIRED_FIELDS_MISSING.name, 'code': Responses.REQUIRED_FIELDS_MISSING.value, "data": response[1]}), 400
+            
+            return jsonify({'result': Responses.SUCCESS.name,'result_code':  Responses.SUCCESS.value, 'inventory_id': response[1] }), 200
+        except Exception as e:
+            return jsonify({'code': Responses.EXCEPTION.value}), 500
 
 
 
