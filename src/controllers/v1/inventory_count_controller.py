@@ -19,8 +19,8 @@ def add_inventory(req):
         
         inventoryToAdd.inventory_id = generate_new_inventory_uuid()
         inventoryToAdd.createdAt: datetime = datetime.now()
-        inventoryToAdd.name = req["name"]
-        inventoryToAdd.inventory_location = req["inventory_location"]
+        inventoryToAdd.name = req.get('name', None)
+        inventoryToAdd.inventory_location = req.get('inventory_location', None)
         ## what else is sent in the request?
 
         inventoryToAdd.add_inventory()
@@ -44,35 +44,10 @@ def update_inventories(id, request_body):
                 pass
             if key == 'participants':
                 inventory_to_update.add_participant(value)
-            
-                
-        
-    
+
     except Exception as e:
         #LogHandling.exceptionHandling(error= f'{e}', origin= 'SELLOUT_CREATION')
         raise Responses.EXCEPTION
     
-    
-    
-    
-    
     ### loop through the key, values of the request's body
     ### verify the key, then call the appropriate method from the model
-    
-    # for key, value in request:
-        
-    #     if key == "status":
-    #         inventory.updateStatus()
-            
-    #     if key == "dueDate":
-    #         inventory.update_dueDate()   
-            
-    #     if key == "participant":
-                 
-    
-    # {
-    #     "status": "Done",
-    #     "dueDate": "March 5th, 2023",
-    #     "event": Event()
-    # }
-    pass

@@ -71,6 +71,8 @@ class User(object):
             raise ValueError('Error adding new User:' f'{e}')
         
         
+        def user_exists(email : str):
+            ### verify if the email already exists
         
         
         
