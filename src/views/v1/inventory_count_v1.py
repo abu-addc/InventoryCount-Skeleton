@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 import json
 
-from controllers.v1.inventory_count_controller import update_inventory, add_inventory
+from src.controllers.v1.inventory_count_controller import update_inventory, add_inventory
 from src.utils.responses import Responses
 
 inventory_count_v1 = Blueprint('inventory_count_v1', __name__)
@@ -11,15 +11,32 @@ inventory_count_v1 = Blueprint('inventory_count_v1', __name__)
 def get_inventory(id):
     pass
 
+
+
 @inventory_count_v1.route('/v1/inventory/', methods=['POST'])
 ### auth decorator method
 def add_inventory(id):
+    # Get the request from the user  
+    inventory = request.get_json()
+    
+    # Set variables for each field
+    created_by = inventory['created_by']
+    events = inventory['events']
+    inventory_location = inventory['inventory_location']
+    items_counted = inventory['items_counted']
+    name = inventory['name']
+    participants = inventory['participants']
+    status = inventory['sta']
+    
+    
     response = add_inventory()
     pass
 
+
+
 @inventory_count_v1.route('/v1/inventory/<id>', methods=['PUT'])
 ### auth decorator method
-def update_inventory(id):
+def updateInventory(id):
     try:
         #req = json.loads(request.data)
         inventoryId = request.args.to_dict()

@@ -26,7 +26,7 @@ def add_inventory(req):
         raise Responses.EXCEPTION
         
 
-def update_inventories(id, request_body):
+def update_inventory(id, request_body):
     try:
         inventory_to_update = InventoryCount()
         #inventory_to_update = inventory_to_update.find_by_inventory_id(id)

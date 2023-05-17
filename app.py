@@ -1,6 +1,11 @@
 from flask import Flask, render_template, jsonify
 import src.globalvars as globalvars
 from flask_cors import CORS
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False

@@ -7,7 +7,10 @@ user_v1 = Blueprint('user_v1', __name__)
 
 @user_v1.route('/v1/user/', methods=['POST'])
 ### auth decorator method
-def create_user():
+def newUser():
+    
+    request_body = request.get_json()
+    
     pass
 
 

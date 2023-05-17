@@ -11,10 +11,21 @@ def add_user(req):
         
         userToAdd = User()
         
+        userToAdd.username = req.get["username", None]
+        userToAdd.password = req.get["password", None]
+        userToAdd.email = req.get["email", None]
+        userToAdd.name = req.get["name", None]
+        userToAdd.job_title = req.get["job_title", None]
+        userToAdd.phone_number = req.get["phone_number", None]
+        
+        
         ## validationList = InventoryCount.validate_fields(req = req)
         
         if validationList > 0:
             return [Responses.REQUIRED_FIELDS_MISSING, validationList]
+        
+        
+        
         
         userToAdd.user_id = generate_new_user_uuid()
         userToAdd.date_registered: datetime = datetime.now()

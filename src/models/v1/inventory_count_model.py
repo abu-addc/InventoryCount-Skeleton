@@ -1,10 +1,10 @@
 from datetime import datetime, timedelta
 import uuid
 
-from src.models.v1.item_model import Item
-from src.models.v1.user_model import User
-from src.models.v1.event_model import Event
-from src.models.v1.participant_model import Participant
+from models.v1.item_model import Item
+from models.v1.user_model import User
+from models.v1.event_model import Event
+from models.v1.participant_model import Participant
 
 from src.services.__init__ import MongoDBConnection
 from src.utils.responses import Responses
