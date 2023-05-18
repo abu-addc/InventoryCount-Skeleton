@@ -8,8 +8,9 @@ from src.models.v1.participant_model import Participant
 
 from src.services.__init__ import MongoDBConnection
 from src.utils.responses import Responses
+from src.utils.custom_encoder import CustomEncoder
 import src.globalvars as globalvars
-
+import json
 from pymongo import MongoClient
 
 class InventoryCount(object):
@@ -39,6 +40,33 @@ class InventoryCount(object):
             "items_counted": self.items_counted,
             "status": self.status
         }
+    
+    def toJSONList(self):
+        JSONList = list()
+        for item in self:
+            JSONList.append(self.toJSON(item))
+        return JSONList
+    
+    ## To retreive a list of inventories by user id
+    def get_all_inventories_by_user_id(user_id):
+        try:
+            
+            inventoryCount = InventoryCount()
+            dataBaseConnection = MongoDBConnection.dataBase(                
+            )[globalvars.INVENTORY_COUNT_COLLECTION]
+            
+            inventoriesFound = list(dataBaseConnection.find({"created_by.user_id": user_id}))
+            
+            if not inventoriesFound:
+                return inventoryCount
+            
+            # Serialize inventories to JSON with the custom encoder
+            inventoriesFound = json.dumps(inventoriesFound, cls=CustomEncoder)
+            
+            return inventoriesFound
+        except Exception as e:
+            ##LogHandling (we need the log.py to build the authentication)
+            raise Responses.EXCEPTION
     
     ## To retrieve an inventory by inventory ID
     def find_by_inventory_id(inventory_id: str):
@@ -94,6 +122,38 @@ class InventoryCount(object):
         except Exception as e:
             ##LogHandling (we need the log.py to build the authentication)
             raise Responses.EXCEPTION
+        
+    ## To update inventory status with the specified user_id
+    def update_status(inventory_id,status):
+        try:
+            dataBaseConnection = MongoDBConnection.dataBase(                
+            )[globalvars.INVENTORY_COUNT_COLLECTION]
+            
+            # Update the status field of the inventory document
+            result = dataBaseConnection.update_one(
+                {"inventory_id": inventory_id},
+                {"$set": {"status": status}})
+
+        
+            return Responses.SUCCESS
+        except Exception as e:
+            raise ValueError('Error updating the status on the inventory with the specified SKU:' f'{e}')
+        
+    ## To update inventory status with the specified user_id
+    def update_dueDate(inventory_id,due_date):
+        try:
+            dataBaseConnection = MongoDBConnection.dataBase(                
+            )[globalvars.INVENTORY_COUNT_COLLECTION]
+            
+            # Update the status field of the inventory document
+            result = dataBaseConnection.update_one(
+                {"inventory_id": inventory_id},
+                {"$set": {"due_date": due_date}})
+
+        
+            return Responses.SUCCESS
+        except Exception as e:
+            raise ValueError('Error updating the due date on the inventory with the specified SKU:' f'{e}')
         
     ## To update a quantity counted from the inventory with the specified SKU
     def update_quatity_counted_base_on_sku(self, sku, quantity_counted):
@@ -203,5 +263,8 @@ class InventoryCount(object):
             return Responses.SUCCESS
         except Exception as e:
             raise ValueError('Error adding inventory to collection:' f'{e}')
+        
+
+    
         
         

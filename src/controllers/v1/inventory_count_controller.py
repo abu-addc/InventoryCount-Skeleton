@@ -4,6 +4,18 @@ from src.utils.libs import generate_new_inventory_uuid
 
 from src.utils.responses import Responses
 
+# Retrieve inventories by user_id
+def get_inventories_by_user(user_id):
+    try:
+        inventories = InventoryCount.get_all_inventories_by_user_id(user_id)
+        if inventories is None:
+            return [Responses.FAIL]
+
+        return [Responses.SUCCESS, inventories] 
+    except Exception as e:
+        # LogHandling.exceptionHandling(error= f'{e}', origin= 'SELLOUT_CANCEL')
+        raise Responses.EXCEPTION
+
 ### Fetch inventory by id : Complete
 def fetch_inventory(inventory_id):
     try:
@@ -59,10 +71,10 @@ def update_inventories(id, request_body):
             if key == 'events':
                 inventory_to_update.add_event(value)
             if key == 'status':
-                #inventory_to_update.update_status(value)
+                inventory_to_update.update_status(id,value)
                 pass
             if key == 'dueDate':
-                #inventory_to_update.update_dueDate(value)
+                inventory_to_update.update_dueDate(id,value)
                 pass
             if key == 'participants':
                 inventory_to_update.add_participant(value)

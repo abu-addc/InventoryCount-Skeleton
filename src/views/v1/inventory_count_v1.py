@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 import json
 
-from src.controllers.v1.inventory_count_controller import update_inventories, add_inventory, update_quantity_counted, fetch_inventory, fetch_itemBySku
+from src.controllers.v1.inventory_count_controller import *
 from src.utils.responses import Responses
 
 inventory_count_v1 = Blueprint('inventory_count_v1', __name__)
@@ -24,17 +24,18 @@ def get_inventory(inventory_id):
         return jsonify({'code': Responses.EXCEPTION.value}), 500
 
 ### Returns the loggedInUser's list of inventories
-@inventory_count_v1.route('/v1/inventories/<sku>', methods=['GET'])
+@inventory_count_v1.route('/v1/inventories/<user_id>', methods=['GET'])
 ### auth decorator method
-def get_item(sku):
+def get_inventories(user_id):
     try:
-        sku = request.args.to_dict() 
-        response = fetch_itemBySku(sku=sku)
+        ##user_id = {"user_id": user_id} 
+        response = get_inventories_by_user(user_id)
+        
+        
         if response[0] == Responses.FAIL:
             return jsonify({'result': Responses.FAIL.name, 'code': Responses.FAIL.value, "data": response[1]}), 400
         
-        return jsonify({'result': Responses.SUCCESS.name,'result_code':  Responses.SUCCESS.value}),200
-    
+        return jsonify({'result': Responses.SUCCESS.name,'result_code':  Responses.SUCCESS.value, 'data': response.toJSONList() }),200
     except Exception as e:
         return jsonify({'code': Responses.EXCEPTION.value}), 500
 
