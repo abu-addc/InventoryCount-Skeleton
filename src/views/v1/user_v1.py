@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 import json
 
-from controllers.v1.user_controller import add_user
+from src.controllers.v1.user_controller import add_user
 from src.utils.responses import Responses
 
 user_v1 = Blueprint('user_v1', __name__)
