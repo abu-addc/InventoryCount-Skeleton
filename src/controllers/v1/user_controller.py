@@ -19,14 +19,13 @@ def add_user(req):
             return [Responses.REQUIRED_FIELDS_MISSING, validationList]
         
         userToAdd.user_id = generate_new_user_uuid()
-        userToAdd.username = req.get["username", None]
-        userToAdd.password = req.get["password", None]
-        userToAdd.email = req.get["email", None]
-        userToAdd.name = req.get["name", None]
-        userToAdd.job_title = req.get["job_title", None]
-        userToAdd.phone_number = req.get["phone_number", None]
+        userToAdd.username = req.get("username", None)
+        userToAdd.password = req.get("password", None)
+        userToAdd.email = req.get("email", None)
+        userToAdd.name = req.get("name", None)
+        userToAdd.job_title = req.get("job_title", None)
+        userToAdd.phone_number = req.get("phone_number", None)
         userToAdd.date_registered: datetime = datetime.now()
-        userToAdd.access_level = 'Regular user'
 
         userToAdd.signup()
         return [Responses.SUCESS] 

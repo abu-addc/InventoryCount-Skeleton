@@ -2,10 +2,12 @@ from flask import Flask, render_template, jsonify
 import src.globalvars as globalvars
 from flask_cors import CORS
 
+from src.views.v1.inventory_count_v1 import inventory_count_v1
+
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
 
-## app.register_blueprint(stores_v1)
+app.register_blueprint(inventory_count_v1)
 
 CORS(app, supports_credentials= True)
 

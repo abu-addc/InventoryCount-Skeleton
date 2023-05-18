@@ -57,7 +57,6 @@ class User(object):
                 "job_title": self.job_title,
                 "phone_number": self.phone_number,
                 }
-
             
             # Insert the user document into the database
             result = dataBaseConnection.insert_one(user_document)
@@ -71,8 +70,8 @@ class User(object):
             raise ValueError('Error adding new User:' f'{e}')
         
         
-        def user_exists(email : str):
-            ### verify if the email already exists
+        # def user_exists(email : str):
+        #     ### verify if the email already exists
         
         
         
