@@ -7,7 +7,7 @@ from src.utils.responses import Responses
 inventory_count_v1 = Blueprint('inventory_count_v1', __name__)
 user_v1 = Blueprint('user_v1', __name__)
 
-### Returns one inventory based on the inventory's id
+### Returns one inventory based on the inventory's id : Complete
 @inventory_count_v1.route('/v1/inventory/<inventory_id>', methods=['GET'])
 ### auth decorator method
 def get_inventory(inventory_id):

@@ -4,7 +4,7 @@ from src.utils.libs import generate_new_inventory_uuid
 
 from src.utils.responses import Responses
 
-
+### Fetch inventory by id : Complete
 def fetch_inventory(inventory_id):
     try:
         inventory = InventoryCount.find_by_inventory_id(inventory_id=inventory_id)
