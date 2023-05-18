@@ -48,8 +48,6 @@ class InventoryCount(object):
             )[globalvars.INVENTORY_COUNT_COLLECTION]
             
             inventoryFound = dataBaseConnection.find_one(inventory_id)
-            print("model")
-            print(inventoryFound)
             
             if not inventoryFound:
                 return inventoryCount
@@ -64,7 +62,6 @@ class InventoryCount(object):
             inventoryCount.items_counted = inventoryFound['items_counted']
             inventoryCount.status = inventoryFound['status']
             
-
             return inventoryCount
         except Exception as e:
             ##LogHandling (we need the log.py to build the authentication)

@@ -5,6 +5,8 @@ from src.services.__init__ import MongoDBConnection
 from src.utils.responses import Responses
 import src.globalvars as globalvars
 
+from pymongo import MongoClient
+
 class User(object):
     
     def __init__(self) -> None:
