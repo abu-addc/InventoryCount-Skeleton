@@ -38,15 +38,15 @@ class InventoryCount(object):
             if not inventoryFound:
                 return inventoryCount
             
-            inventoryCount.inventory_id = inventoryFound['inventory_id']
-            inventoryCount.name = inventoryFound['name']
-            inventoryCount.inventory_location = inventoryFound['inventory_location']
-            inventoryCount.created_by = inventoryFound['created_by']
-            inventoryCount.date_created = inventoryFound['date_created']
-            inventoryCount.events = inventoryFound['events']
-            inventoryCount.participants = inventoryFound['participants']
-            inventoryCount.items_counted = inventoryFound['items_counted']
-            inventoryCount.status = inventoryFound['status']
+            inventoryCount.inventory_id = inventoryFound.get('inventory_id', None)
+            inventoryCount.name = inventoryFound.get('name', None)
+            inventoryCount.inventory_location = inventoryFound.get('inventory_location', None)
+            inventoryCount.created_by = inventoryFound.get('created_by', None)
+            inventoryCount.date_created = inventoryFound.get('date_created', None)
+            inventoryCount.events = inventoryFound.get('events', None)
+            inventoryCount.participants = inventoryFound.get('participants', None)
+            inventoryCount.items_counted = inventoryFound.get('items_counted', None)
+            inventoryCount.status = inventoryFound.get('status', None)
             
             print(inventoryCount)
 

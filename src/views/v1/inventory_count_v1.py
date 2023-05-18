@@ -5,6 +5,7 @@ from src.controllers.v1.inventory_count_controller import update_inventories, ad
 from src.utils.responses import Responses
 
 inventory_count_v1 = Blueprint('inventory_count_v1', __name__)
+user_v1 = Blueprint('user_v1', __name__)
 
 ### Returns one inventory based on the inventory's id
 @inventory_count_v1.route('/v1/inventory/<inventory_id>', methods=['GET'])
@@ -13,7 +14,6 @@ def get_inventory(inventory_id):
     try:
         inventory_id = request.args.to_dict() 
         response = fetch_inventory(inventory_id=inventory_id)
-        print("res: " + response)
         
         if response[0] == Responses.FAIL:
             return jsonify({'result': Responses.FAIL.name, 'code': Responses.FAIL.value, "data": response[1]}), 400
