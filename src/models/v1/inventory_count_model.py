@@ -23,7 +23,7 @@ class InventoryCount(object):
         self.due_date : datetime = None
         self.events = []
         self.participants = []
-        self.items_counted = []
+        self.items_counted : Item = None
         self.status : str = None
         
     ### functions to retrieve, update, delete inventories   
@@ -38,7 +38,13 @@ class InventoryCount(object):
             "participants": self.participants,
             "items_counted": self.items_counted,
             "status": self.status
+        }  
+    
+    def toJSONItem(self):
+        return {
+            "items_counted": self.items_counted
         }
+    
     
     ## To retrieve an inventory by inventory ID
     def find_by_inventory_id(inventory_id: str):
@@ -64,9 +70,6 @@ class InventoryCount(object):
             inventoryCount.items_counted = inventoryFound['items_counted']
             inventoryCount.status = inventoryFound['status']
             
-            print(inventoryCount.status)
-            print(inventoryCount.inventory_id)
-            print(inventoryCount.inventory_location)
 
             return inventoryCount
         except Exception as e:
@@ -80,15 +83,22 @@ class InventoryCount(object):
             dataBaseConnection = MongoDBConnection.dataBase(                
             )[globalvars.INVENTORY_COUNT_COLLECTION]
             
+            print(sku)
             itemFound = dataBaseConnection.find_one({"items_counted.sku": sku}, {"items_counted.$": 1})
+
+            
+            print(itemFound)
 
             if not itemFound:
                 return item
             
+            item.sku = itemFound['sku']
             item.item_name = itemFound['item_name']
             item.last_updated = itemFound['last_updated']
             item.quantity_counted = itemFound['quantity_counted']
-            item.sku = itemFound['sku']
+
+            print(item.item_name)
+            print(item.quantity_counted)
 
             return item
         except Exception as e:
@@ -100,34 +110,33 @@ class InventoryCount(object):
         try:
             dataBaseConnection = MongoDBConnection.dataBase(                
             )[globalvars.INVENTORY_COUNT_COLLECTION]
-            
-            listOfItems = []
-            
-            for item in self.items_counted:
-                sku = item.sku
-                quantity_counted = item.quantity_counted
-                filter = {"inventory_id": self.inventory_id, "items_counted.sku": sku}
-                update = {"$set": {"items_counted.$.quantity_counted": quantity_counted}}
-                dataBaseConnection.update_one(filter, update)
-        
-            return Responses.SUCCESS
+
+            print(self.inventory_id)
+ 
+            # filter = {"inventory_id": self.inventory_id, "items_counted.sku": sku}
+            # update = {"$set": {"items_counted.$.quantity_counted": quantity_counted}}
+            # dataBaseConnection.update_one(filter, update)
+            dataBaseConnection.update_one(
+            {"inventory_id": self.inventory_id, "items_counted.sku": sku}, 
+            {"$set": {"items_counted.$.quantity_counted": quantity_counted}}
+            )
+
+            return [Responses.SUCCESS, self.inventory_id]
         except Exception as e:
             raise ValueError('Error updating quantity counted from the inventory with the specified SKU:' f'{e}')
 
     ## To update a quantity counted from the inventory with the specified user_id
-    def update_quatity_counted_base_on_user_id(self):
+    def update_quatity_counted_base_on_user_id(self, user_id, quantity_counted):
         try:
             dataBaseConnection = MongoDBConnection.dataBase(                
             )[globalvars.INVENTORY_COUNT_COLLECTION]
 
-            for participant in self.participants:
-                user_id = participant['user_id']
-                quantity_counted = participant['quantity_counted']
-                filter = {"inventory_id": self.inventory_id, "participants.user_id": user_id}
-                update = {"$set": {"participants.$.quantity_counted": quantity_counted}}
-                dataBaseConnection.update_one(filter, update)
+           
+            filter = {"inventory_id": self.inventory_id, "participants.user_id": user_id}
+            update = {"$set": {"participants.$.quantity_counted": quantity_counted}}
+            dataBaseConnection.update_one(filter, update)
         
-            return Responses.SUCCESS
+            return [Responses.SUCCESS, self.inventory_id]
         except Exception as e:
             raise ValueError('Error updating quantity counted from the inventory with the specified userID:' f'{e}')
 
