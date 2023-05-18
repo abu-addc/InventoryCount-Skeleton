@@ -6,10 +6,13 @@ from src.utils.responses import Responses
 
 
 def fetch_inventory(inventory_id):
+    print("controller")
     try:
         inventory = InventoryCount.find_by_inventory_id(inventory_id= inventory_id)
         if inventory is None:
             return [Responses.FAIL]
+        
+        print(inventory.inventory_id )
 
         return [Responses.SUCCESS, inventory] 
     except Exception as e:
@@ -22,6 +25,8 @@ def fetch_itemBySku(sku):
         if item is None:
             return [Responses.FAIL]
 
+        print(item.sku)
+        
         return [Responses.SUCCESS, item] 
     except Exception as e:
         # LogHandling.exceptionHandling(error= f'{e}', origin= 'SELLOUT_CANCEL')

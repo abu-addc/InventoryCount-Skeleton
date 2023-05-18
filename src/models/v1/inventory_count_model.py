@@ -4,11 +4,11 @@ import uuid
 from src.models.v1.item_model import Item
 from src.models.v1.user_model import User
 from src.models.v1.event_model import Event
-from src.models.v1.participant_model import Participant
 
 from src.services.__init__ import MongoDBConnection
 from src.utils.responses import Responses
 import src.globalvars as globalvars
+from pymongo import MongoClient
 
 class InventoryCount(object):
         
@@ -21,48 +21,65 @@ class InventoryCount(object):
         self.due_date : datetime = None
         self.events = []
         self.participants = []
-        self.items_counted = []
+        self.items_counted: Item = []
         self.status : str = None
         
     ### functions to retrieve, update, delete inventories   
     
     ## To retrieve an inventory by inventory ID
     def find_by_inventory_id(inventory_id: str):
+        print("model")
         try:
             inventoryCount = InventoryCount()
             dataBaseConnection = MongoDBConnection.dataBase(                
             )[globalvars.INVENTORY_COUNT_COLLECTION]
+
+            # print(dataBaseConnection)
+
+            print(inventory_id)
             
-            inventoryFound = dataBaseConnection.find_one({"inventory_id": inventory_id})
+            inventoryFound = dataBaseConnection.find_one(inventory_id)
+
+            print(inventoryFound)
+
             
             if not inventoryFound:
                 return inventoryCount
             
-            inventoryCount.inventory_id = inventoryFound.get('inventory_id', None)
-            inventoryCount.name = inventoryFound.get('name', None)
-            inventoryCount.inventory_location = inventoryFound.get('inventory_location', None)
-            inventoryCount.created_by = inventoryFound.get('created_by', None)
-            inventoryCount.date_created = inventoryFound.get('date_created', None)
-            inventoryCount.events = inventoryFound.get('events', None)
-            inventoryCount.participants = inventoryFound.get('participants', None)
-            inventoryCount.items_counted = inventoryFound.get('items_counted', None)
-            inventoryCount.status = inventoryFound.get('status', None)
+            inventoryCount.inventory_id = inventoryFound['inventory_id']
+            inventoryCount.name = inventoryFound['name']
+            inventoryCount.inventory_location = inventoryFound['inventory_location']
+            inventoryCount.created_by = inventoryFound['created_by']
+            inventoryCount.date_created = inventoryFound['date_created']
+            inventoryCount.events = inventoryFound['events']
+            inventoryCount.participants = inventoryFound['participants']
+            inventoryCount.items_counted = inventoryFound['items_counted']
+            inventoryCount.status = inventoryFound['status']
             
             print(inventoryCount)
 
             return inventoryCount
         except Exception as e:
             ##LogHandling (we need the log.py to build the authentication)
+            print(e)
             raise Responses.EXCEPTION
 
     ## To retrive an item from the inventory by SKU
     def find_item_by_sku(sku: str):
+        print("sku modle")
         try:
-            item = Item()
+            item = InventoryCount()
             dataBaseConnection = MongoDBConnection.dataBase(                
             )[globalvars.INVENTORY_COUNT_COLLECTION]
+
+            print(globalvars.INVENTORY_COUNT_COLLECTION)
             
-            itemFound = dataBaseConnection.find_one({"items_counted.sku": sku}, {"items_counted.$": 1})
+            print("item found")
+            itemFound = dataBaseConnection.find_one(sku)
+
+            print("item: ")
+
+            print(itemFound)
 
             if not itemFound:
                 return item
@@ -75,6 +92,7 @@ class InventoryCount(object):
             return item
         except Exception as e:
             ##LogHandling (we need the log.py to build the authentication)
+            print(e)
             raise Responses.EXCEPTION
         
     ## To update a quantity counted from the inventory with the specified SKU
