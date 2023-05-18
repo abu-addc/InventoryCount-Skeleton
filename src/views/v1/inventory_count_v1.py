@@ -18,7 +18,7 @@ def get_inventory(inventory_id):
         if response[0] == Responses.FAIL:
             return jsonify({'result': Responses.FAIL.name, 'code': Responses.FAIL.value, "data": response[1]}), 400
         
-        return jsonify({'result': Responses.SUCCESS.name,'result_code':  Responses.SUCCESS.value, "data": response[1]}),200
+        return jsonify({'result': Responses.SUCCESS.name,'result_code':  Responses.SUCCESS.value}),200
     except Exception as e:
         return jsonify({'code': Responses.EXCEPTION.value}), 500
 
