@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 import src.globalvars as globalvars
 from flask_cors import CORS
 

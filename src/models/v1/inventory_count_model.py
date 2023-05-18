@@ -10,6 +10,8 @@ from src.services.__init__ import MongoDBConnection
 from src.utils.responses import Responses
 import src.globalvars as globalvars
 
+from pymongo import MongoClient
+
 class InventoryCount(object):
         
     def __init__(self) -> None:
@@ -30,25 +32,24 @@ class InventoryCount(object):
     def find_by_inventory_id(inventory_id: str):
         try:
             inventoryCount = InventoryCount()
-            dataBaseConnection = MongoDBConnection.dataBase(                
+            dataBaseConnection = MongoDBConnection.dataBase(
             )[globalvars.INVENTORY_COUNT_COLLECTION]
-            
-            inventoryFound = dataBaseConnection.find_one({"inventory_id": inventory_id})
-            
+            print(inventory_id)
+            print(dataBaseConnection)
+            inventoryFound = dataBaseConnection.find_one(inventory_id)
+            print(inventoryFound)
             if not inventoryFound:
                 return inventoryCount
-            
-            inventoryCount.inventory_id = inventoryFound.get('inventory_id', None)
-            inventoryCount.name = inventoryFound.get('name', None)
-            inventoryCount.inventory_location = inventoryFound.get('inventory_location', None)
-            inventoryCount.created_by = inventoryFound.get('created_by', None)
-            inventoryCount.date_created = inventoryFound.get('date_created', None)
-            inventoryCount.events = inventoryFound.get('events', None)
-            inventoryCount.participants = inventoryFound.get('participants', None)
-            inventoryCount.items_counted = inventoryFound.get('items_counted', None)
-            inventoryCount.status = inventoryFound.get('status', None)
-            
-            print(inventoryCount)
+
+            inventoryCount.inventory_id = inventoryFound['inventory_id']
+            inventoryCount.name = inventoryFound['name']
+            inventoryCount.inventory_location = inventoryFound['inventory_location']
+            inventoryCount.created_by = inventoryFound['created_by']
+            inventoryCount.date_created = inventoryFound['date_created']
+            inventoryCount.events = inventoryFound['events']
+            inventoryCount.participants = inventoryFound['participants']
+            inventoryCount.items_counted = inventoryFound['items_counted']
+            inventoryCount.status = inventoryFound['status']
 
             return inventoryCount
         except Exception as e:
