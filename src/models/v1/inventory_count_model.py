@@ -27,6 +27,18 @@ class InventoryCount(object):
         self.status : str = None
         
     ### functions to retrieve, update, delete inventories   
+    def toJSON(self):
+        return {
+            "inventory_id": self.inventory_id,
+            "name" : self.name,
+            "inventory_location" : self.inventory_location,
+            "created_by" : self.created_by,
+            "date_created": self.date_created,
+            "events": self.events,
+            "participants": self.participants,
+            "items_counted": self.items_counted,
+            "status": self.status
+        }
     
     ## To retrieve an inventory by inventory ID
     def find_by_inventory_id(inventory_id: str):
@@ -34,10 +46,11 @@ class InventoryCount(object):
             inventoryCount = InventoryCount()
             dataBaseConnection = MongoDBConnection.dataBase(
             )[globalvars.INVENTORY_COUNT_COLLECTION]
-            print(inventory_id)
-            print(dataBaseConnection)
+            
             inventoryFound = dataBaseConnection.find_one(inventory_id)
+            print("model")
             print(inventoryFound)
+            
             if not inventoryFound:
                 return inventoryCount
 
@@ -50,6 +63,10 @@ class InventoryCount(object):
             inventoryCount.participants = inventoryFound['participants']
             inventoryCount.items_counted = inventoryFound['items_counted']
             inventoryCount.status = inventoryFound['status']
+            
+            print(inventoryCount.status)
+            print(inventoryCount.inventory_id)
+            print(inventoryCount.inventory_location)
 
             return inventoryCount
         except Exception as e:

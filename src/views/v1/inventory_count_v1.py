@@ -12,13 +12,14 @@ user_v1 = Blueprint('user_v1', __name__)
 ### auth decorator method
 def get_inventory(inventory_id):
     try:
-        inventory_id = request.args.to_dict() 
+        inventory_id = {"inventory_id": inventory_id}
         response = fetch_inventory(inventory_id=inventory_id)
+        print(response)
         
         if response[0] == Responses.FAIL:
             return jsonify({'result': Responses.FAIL.name, 'code': Responses.FAIL.value, "data": response[1]}), 400
         
-        return jsonify({'result': Responses.SUCCESS.name,'result_code':  Responses.SUCCESS.value}),200
+        return jsonify({'result': Responses.SUCCESS.name,'result_code':  Responses.SUCCESS.value, 'data': response[1].toJSON() }),200
     except Exception as e:
         return jsonify({'code': Responses.EXCEPTION.value}), 500
 
