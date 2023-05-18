@@ -7,7 +7,7 @@ from src.utils.responses import Responses
 inventory_count_v1 = Blueprint('inventory_count_v1', __name__)
 user_v1 = Blueprint('user_v1', __name__)
 
-### Returns one inventory based on the inventory's id : Complete
+### Returns one inventory based on the inventory's id : Completed
 @inventory_count_v1.route('/v1/inventory/<inventory_id>', methods=['GET'])
 ### auth decorator method
 def get_inventory(inventory_id):
@@ -19,21 +19,39 @@ def get_inventory(inventory_id):
         if response[0] == Responses.FAIL:
             return jsonify({'result': Responses.FAIL.name, 'code': Responses.FAIL.value, "data": response[1]}), 400
         
-        return jsonify({'result': Responses.SUCCESS.name,'result_code':  Responses.SUCCESS.value, 'data': response[1].toJSON() }),200
+        return jsonify({'result': Responses.SUCCESS.name,'result_code':  Responses.SUCCESS.value, 'data': response[1].toJSONItem() }),200
     except Exception as e:
         return jsonify({'code': Responses.EXCEPTION.value}), 500
 
-### Returns the loggedInUser's list of inventories
-@inventory_count_v1.route('/v1/inventories/<sku>', methods=['GET'])
+### Returns the item based on SKU: Completed
+@inventory_count_v1.route('/v1/inventory/<inventory_id>/getItem/<sku>', methods=['GET'])
 ### auth decorator method
-def get_item(sku):
+def get_item(inventory_id, sku):
     try:
-        sku = request.args.to_dict() 
-        response = fetch_itemBySku(sku=sku)
-        if response[0] == Responses.FAIL:
-            return jsonify({'result': Responses.FAIL.name, 'code': Responses.FAIL.value, "data": response[1]}), 400
+        # inventory_id = {"inventory_id": inventory_id}
+        # # print(sku) 
+        # response = fetch_itemBySku(inventory_id, sku)
+        # if response[0] == Responses.FAIL:
+        #     return jsonify({'result': Responses.FAIL.name, 'code': Responses.FAIL.value, "data": response[1]}), 400
         
-        return jsonify({'result': Responses.SUCCESS.name,'result_code':  Responses.SUCCESS.value}),200
+        # return jsonify({'result': Responses.SUCCESS.name,'result_code':  Responses.SUCCESS.value, 'data': response[1].toJSON()}),200
+        inventory_id = {"inventory_id": inventory_id}
+        inventory = fetch_inventory(inventory_id)
+        print(inventory)
+
+        if inventory[0] == Responses.FAIL:
+            return jsonify({'result': Responses.FAIL.name, 'code': Responses.FAIL.value, "data": inventory[1]}), 400
+
+        items = inventory[1].items_counted
+        print(items)
+
+        for item in items:
+            if item['sku'] == sku:
+                return jsonify(item), 200
+            # If the item with the provided SKU is not found
+            
+        return jsonify({'result': 'Item not found.'}), 404
+    
     
     except Exception as e:
         return jsonify({'code': Responses.EXCEPTION.value}), 500
@@ -80,14 +98,16 @@ def update_inventory_view(id):
     except Exception as e:
         return jsonify({'code': Responses.EXCEPTION.value}), 500
         
-### update inventory_quantity_counted 
+### update inventory_quantity_counted: Completed
 @inventory_count_v1.route('/v1/inventoryCount/<inventory_id>', methods=['PUT'])
 ### auth decorator method
 def update_quantity_counted_view(inventory_id):
     try:
         #req = json.loads(request.data)
-        inventory_id = request.args.to_dict()
+        # inventory_id = {"inventory_id": inventory_id}
         request_body = request.get_json()
+
+        print(request_body)
             
         response = update_quantity_counted(inventory_id, request_body)
             

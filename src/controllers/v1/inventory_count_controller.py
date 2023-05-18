@@ -17,9 +17,15 @@ def fetch_inventory(inventory_id):
         # LogHandling.exceptionHandling(error= f'{e}', origin= 'SELLOUT_CANCEL')
         raise Responses.EXCEPTION    
 
-def fetch_itemBySku(sku):
+def fetch_itemBySku(inventory_id, sku):
     try:
-        item = InventoryCount.find_item_by_sku(sku=sku)
+        inventory = InventoryCount.find_by_inventory_id(inventory_id=inventory_id)
+
+        if inventory is None:
+            return [Responses.FAIL]
+       
+        item = inventory.find_item_by_sku(sku=sku)
+
         if item is None:
             return [Responses.FAIL]
 
@@ -76,15 +82,21 @@ def update_inventories(id, request_body):
 def update_quantity_counted(inventory_id, request_body):
     try:
         inventory_to_update = InventoryCount()
-        sku = request_body.get('sku')  # Retrieve the value of the "sku" key
-        quantity_counted = request_body.get('quantity_counted')  # Retrieve the value of the "quantity_counted" key
-        user_id = request_body.get('user_id') # Retrieve the value of the "user_id" key
+        inventory_to_update.inventory_id = inventory_id
+        sku = request_body.get('sku', None)  # Retrieve the value of the "sku" key
+        print(sku)  
+        quantity_counted = request_body.get('quantity_counted', None)  # Retrieve the value of the "quantity_counted" key
+        user_id = request_body.get('user_id', None) # Retrieve the value of the "user_id" key
             
         if sku and quantity_counted:
-            inventory_to_update.update_quatity_counted_base_on_sku(sku=sku, quantity_counted=quantity_counted)
+            print("we here s and q")
+            response = inventory_to_update.update_quatity_counted_base_on_sku(sku=sku, quantity_counted=quantity_counted)
 
         if user_id and quantity_counted:
-            inventory_to_update.update_quatity_counted_base_on_user_id(user_id=user_id, quantity_counted=quantity_counted)
+            print("we here u and q")
+            response = inventory_to_update.update_quatity_counted_base_on_user_id(user_id=user_id, quantity_counted=quantity_counted)
+
+        return response
             
     except Exception as e:
         #LogHandling.exceptionHandling(error= f'{e}', origin= 'SELLOUT_CREATION')
