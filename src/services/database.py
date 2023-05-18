@@ -74,3 +74,4 @@ class MongoDB(object):
             self.__setLastError(2, e)
             print(f"(?) MongoDB.disconnect Exception \n {e}")
             return False
+        

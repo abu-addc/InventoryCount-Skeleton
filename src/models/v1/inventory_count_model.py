@@ -4,12 +4,11 @@ import uuid
 from src.models.v1.item_model import Item
 from src.models.v1.user_model import User
 from src.models.v1.event_model import Event
-from src.models.v1.participant_model import Participant
 
 from src.services.__init__ import MongoDBConnection
 from src.utils.responses import Responses
 import src.globalvars as globalvars
-
+from pymongo import MongoClient
 class InventoryCount(object):
         
     def __init__(self) -> None:
@@ -32,9 +31,10 @@ class InventoryCount(object):
             inventoryCount = InventoryCount()
             dataBaseConnection = MongoDBConnection.dataBase(                
             )[globalvars.INVENTORY_COUNT_COLLECTION]
-            
-            inventoryFound = dataBaseConnection.find_one({"inventory_id": inventory_id})
-
+            print(inventory_id)
+            print(dataBaseConnection)
+            inventoryFound = dataBaseConnection.find_one(inventory_id)
+            print(inventoryFound)
             if not inventoryFound:
                 return inventoryCount
             
@@ -81,33 +81,27 @@ class InventoryCount(object):
             dataBaseConnection = MongoDBConnection.dataBase(                
             )[globalvars.INVENTORY_COUNT_COLLECTION]
             
-            listOfItems = []
-            
-            for item in self.items_counted:
-                sku = item.sku
-                quantity_counted = item.quantity_counted
-                filter = {"inventory_id": self.inventory_id, "items_counted.sku": sku}
-                update = {"$set": {"items_counted.$.quantity_counted": quantity_counted}}
-                dataBaseConnection.update_one(filter, update)
-        
+            filter = {"inventory_id": self.inventory_id, "items_counted.sku": sku}
+            update = {"$set": {"items_counted.$.quantity_counted": quantity_counted}}
+            dataBaseConnection.update_one(filter, update)
+                
             return Responses.SUCCESS
+        
         except Exception as e:
             raise ValueError('Error updating quantity counted from the inventory with the specified SKU:' f'{e}')
 
     ## To update a quantity counted from the inventory with the specified user_id
-    def update_quatity_counted_base_on_user_id(self):
+    def update_quatity_counted_base_on_user_id(self, user_id, quantity_counted):
         try:
             dataBaseConnection = MongoDBConnection.dataBase(                
             )[globalvars.INVENTORY_COUNT_COLLECTION]
 
-            for participant in self.participants:
-                user_id = participant['user_id']
-                quantity_counted = participant['quantity_counted']
-                filter = {"inventory_id": self.inventory_id, "participants.user_id": user_id}
-                update = {"$set": {"participants.$.quantity_counted": quantity_counted}}
-                dataBaseConnection.update_one(filter, update)
+            filter = {"inventory_id": self.inventory_id, "participants.user_id": user_id}
+            update = {"$set": {"participants.$.quantity_counted": quantity_counted}}
+            dataBaseConnection.update_one(filter, update)
         
             return Responses.SUCCESS
+        
         except Exception as e:
             raise ValueError('Error updating quantity counted from the inventory with the specified userID:' f'{e}')
 
