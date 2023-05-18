@@ -40,12 +40,6 @@ class InventoryCount(object):
             "status": self.status
         }  
     
-    def toJSONItem(self):
-        return {
-            "items_counted": self.items_counted
-        }
-    
-    
     ## To retrieve an inventory by inventory ID
     def find_by_inventory_id(inventory_id: str):
         try:
