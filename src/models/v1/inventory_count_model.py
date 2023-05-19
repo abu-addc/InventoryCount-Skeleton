@@ -25,8 +25,7 @@ class InventoryCount(object):
         self.participants = []
         self.items_counted : Item = None
         self.status : str = None
-        
-    ### functions to retrieve, update, delete inventories   
+          
     def toJSON(self):
         return {
             "inventory_id": self.inventory_id,
@@ -40,6 +39,7 @@ class InventoryCount(object):
             "status": self.status
         }  
     
+    ### functions to retrieve, update, delete inventories 
     ## To retrieve an inventory by inventory ID
     def find_by_inventory_id(inventory_id: str):
         try:
@@ -131,8 +131,8 @@ class InventoryCount(object):
         except Exception as e:
             raise ValueError('Error updating quantity counted from the inventory with the specified userID:' f'{e}')
 
-    ## Add Participant to an inventory
-    def add_participant(self, user : User):
+    ## Adds participant to an Inventory
+    def add_participant(self, participant : Participant):
         try:
             dataBaseConnection = MongoDBConnection.dataBase(                
             )[globalvars.INVENTORY_COUNT_COLLECTION]
@@ -147,18 +147,18 @@ class InventoryCount(object):
                 {"inventory_id": self.inventory_id},
                 {"$push": {
                     "participants": {
-                        "user_id": user.user_id,
-                        "username": user.username,
-                        "email": user.email
+                        "user_id": participant.user_id,
+                        "username": participant.username,
+                        "email": participant.email
                     }
                 }}
             )
         
-            return Responses.SUCCESS
+            return [Responses.SUCCESS, self.inventory_id]
         except Exception as e:
             raise ValueError('Error adding participant:' f'{e}')
         
-    ## Add Event to an inventory's list of events
+    ## Adds Event to an inventory's list of events
     def add_event(self, event : Event):
         try:
             dataBaseConnection = MongoDBConnection.dataBase(                
@@ -181,7 +181,7 @@ class InventoryCount(object):
                 }}
             )
         
-            return Responses.SUCCESS
+            return [Responses.SUCCESS, event]
         except Exception as e:
             raise ValueError('Error adding event to list of events:' f'{e}')
         
@@ -195,12 +195,15 @@ class InventoryCount(object):
                 "inventory_id": self.inventory_id,
                 "name": self.name,
                 "created_by" : self.created_by,
-                "inventory_location": self.inventory_location                 
-            } 
-        
+                "inventory_location": self.inventory_location,
+                "due_date": self.due_date,
+                "date_created": self.date_created,
+                "status": self.status       
+            }
             result = dataBaseConnection.insert_one(new_inventory)
+            print(result)
 
-            return Responses.SUCCESS
+            return [Responses.SUCCESS, self.inventory_id]
         except Exception as e:
             raise ValueError('Error adding inventory to collection:' f'{e}')
         

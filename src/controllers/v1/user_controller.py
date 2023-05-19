@@ -31,7 +31,13 @@ def add_user(req):
         return [Responses.SUCESS] 
     except Exception as e:
         raise Responses.EXCEPTION
-
-
+    
+    
+def sign_in(request_body):
+    try: 
+        
+        pass
+    except Exception as e:
+        raise Responses.EXCEPTION    
 
 

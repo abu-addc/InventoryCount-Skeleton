@@ -9,4 +9,11 @@ class Event(object):
         self.event_time = datetime.now()
         
         
+    def toJSON(self):
+        return {
+            "event_type": self.event_type,
+            "user" : self.user,
+            "event_time" : self.event_time
+        }      
+        
         

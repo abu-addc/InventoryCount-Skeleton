@@ -5,7 +5,6 @@ from src.controllers.v1.inventory_count_controller import update_inventories, ad
 from src.utils.responses import Responses
 
 inventory_count_v1 = Blueprint('inventory_count_v1', __name__)
-user_v1 = Blueprint('user_v1', __name__)
 
 ### Returns one inventory based on the inventory's id : Completed
 @inventory_count_v1.route('/v1/inventory/<inventory_id>', methods=['GET'])
@@ -59,9 +58,8 @@ def get_item(inventory_id, sku):
 ### add a new inventory
 @inventory_count_v1.route('/v1/inventory/', methods=['POST'])
 ### auth decorator method
-def add_inventory(id):
+def add_inventory():
     try: 
-        req = json.loads(request.data)
         request_body = request.get_json()
         
         response = add_inventory(request_body)
@@ -72,20 +70,20 @@ def add_inventory(id):
         if response[0] == Responses.REQUIRED_FIELDS_MISSING:
             return jsonify({'result': Responses.REQUIRED_FIELDS_MISSING.name, 'code': Responses.REQUIRED_FIELDS_MISSING.value, "data": response[1]}), 400
         
-        return jsonify({'result': Responses.SUCCESS.name,'result_code':  Responses.SUCCESS.value, 'inventory_id': response[1] }), 200
+        return jsonify({'result': Responses.SUCCESS.name,'result_code':  Responses.SUCCESS.value }), 200
     except Exception as e:
         return jsonify({'code': Responses.EXCEPTION.value}), 500
     
-### update an existing inventory    
-@inventory_count_v1.route('/v1/inventory/<id>', methods=['PUT'])
+### update an existing inventory's status, dueDate
+### add an event or participant to the inventory    
+@inventory_count_v1.route('/v1/inventory/<inventory_id>', methods=['PUT'])
 ### auth decorator method
-def update_inventory_view(id):
+def update_inventory_view(inventory_id):
     try:
         #req = json.loads(request.data)
-        inventoryId = request.args.to_dict()
         request_body = request.get_json()
         
-        response = update_inventories(inventoryId, request_body)
+        response = update_inventories(inventory_id, request_body)
         
         if response[0] == Responses.FAIL:
             return jsonify({'result': Responses.FAIL.name, 'code': Responses.FAIL.value, "data": response[1]}), 400
@@ -93,8 +91,7 @@ def update_inventory_view(id):
         if response[0] == Responses.REQUIRED_FIELDS_MISSING:
             return jsonify({'result': Responses.REQUIRED_FIELDS_MISSING.name, 'code': Responses.REQUIRED_FIELDS_MISSING.value, "data": response[1]}), 400
         
-        return jsonify({'result': Responses.SUCCESS.name,'result_code':  Responses.SUCCESS.value, 'inventory_id': response[1] }), 200
-    
+        return jsonify({'result': Responses.SUCCESS.name,'result_code': Responses.SUCCESS.value }), 200
     except Exception as e:
         return jsonify({'code': Responses.EXCEPTION.value}), 500
         
