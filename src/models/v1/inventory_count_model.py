@@ -232,11 +232,15 @@ class InventoryCount(object):
             new_inventory = { 
                 "inventory_id": self.inventory_id,
                 "name": self.name,
-                "created_by" : self.created_by,
+                "created_by": {
+                    "username": self.created_by.username,
+                    "email": self.created_by.email,
+                    "user_id": self.created_by.user_id
+                },
                 "inventory_location": self.inventory_location,
-                "events": {},
-                "participants": {},
-                "items_counted": {},
+                "events": [],
+                "participants": [],
+                "items_counted": [],
                 "due_date": self.due_date,
                 "date_created": self.date_created,
                 "status": self.status       
@@ -244,7 +248,11 @@ class InventoryCount(object):
             result = dataBaseConnection.insert_one(new_inventory)
             print(result)
 
-            return [Responses.SUCCESS, self.inventory_id]
+            if result is None:
+                return [Responses.FAIL, "Error inserting inventory into collection"]
+            else:
+                return [Responses.SUCCESS, self.inventory_id]
+                
         except Exception as e:
             raise ValueError('Error adding inventory to collection:' f'{e}')
         
