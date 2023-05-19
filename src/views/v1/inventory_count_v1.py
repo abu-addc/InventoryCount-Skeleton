@@ -119,11 +119,13 @@ def get_inventories(user_id):
     try:
         ##user_id = {"user_id": user_id} 
         response = get_inventories_by_user(user_id)
-
+        inventories = list()
+        for inventory in response[1]:
+            inventories.append(inventory.toJSON())
         if response[0] == Responses.FAIL:
             return jsonify({'result': Responses.FAIL.name, 'code': Responses.FAIL.value, "data": response[1]}), 400
 
-        return jsonify({'result': Responses.SUCCESS.name,'result_code':  Responses.SUCCESS.value, 'data': response.toJSONList() }),200
+        return jsonify({'result': Responses.SUCCESS.name,'result_code':  Responses.SUCCESS.value, 'data': inventories }),200
     except Exception as e:
         return jsonify({'code': Responses.EXCEPTION.value}), 500
 

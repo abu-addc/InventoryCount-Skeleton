@@ -288,14 +288,25 @@ class InventoryCount(object):
             )[globalvars.INVENTORY_COUNT_COLLECTION]
 
             inventoriesFound = list(dataBaseConnection.find({"created_by.user_id": user_id}))
-
             if not inventoriesFound:
                 return inventoryCount
-
             # Serialize inventories to JSON with the custom encoder
-            inventoriesFound = json.dumps(inventoriesFound, cls=CustomEncoder)
-
-            return inventoriesFound
+            # inventoriesFound = json.dumps(inventoriesFound, cls=CustomEncoder)
+            inventories = list()
+            for x in inventoriesFound:
+                inventory = InventoryCount()
+                inventory.inventory_id = x['inventory_id']
+                inventory.name = x['name']
+                inventory.inventory_location = x['inventory_location']
+                inventory.created_by = x['created_by']
+                inventory.date_created = x['date_created']
+                inventory.events = x['events']
+                inventory.participants = x['participants']
+                inventory.items_counted = x['items_counted']
+                inventory.status = x['status']
+                inventories.append(inventory) 
+                 
+            return inventories
         except Exception as e:
             ##LogHandling (we need the log.py to build the authentication)
             raise Responses.EXCEPTION
