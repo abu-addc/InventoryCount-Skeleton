@@ -40,31 +40,35 @@ def fetch_itemBySku(inventory_id, sku):
 
 def add_inventory(request_body):
     try:
-        validationList = []
-        
+        # validationList = []
         inventoryToAdd = InventoryCount()
         
-        ## validationList = InventoryCount.validate_fields(req = req)
+        # validationList = inventoryToAdd.validate_fields(request_body)
         
-        if validationList > 0:
-            return [Responses.REQUIRED_FIELDS_MISSING, validationList]
+        ## if validationList:
+        ##     return [Responses.REQUIRED_FIELDS_MISSING, validationList]
         
         inventoryToAdd.inventory_id = generate_new_inventory_uuid()
-        inventoryToAdd.date_created : datetime = datetime.now()
-        inventoryToAdd.name = request_body.get('name', None)
-        inventoryToAdd.inventory_location = request_body.get('inventory_location', None)
-        inventoryToAdd.due_date = request_body('due_date', None)
-        
-        createdBy = User()
-        createdBy.user_id = request_body.get('created_by').get('user_id', None)
-        createdBy.username = request_body.get('created_by').get('username', None)
-        createdBy.email = request_body.get('created_by').get('email', None)
-        
-        inventoryToAdd.created_by = createdBy
+        inventoryToAdd.date_created = datetime.now()
+        inventoryToAdd.name = request_body.get('name')
+        inventoryToAdd.inventory_location = request_body.get('inventory_location')
+        inventoryToAdd.due_date = request_body.get('due_date')
+
+        created_by = User()
+        created_by.user_id = request_body['created_by'].get('user_id')
+        created_by.username = request_body['created_by'].get('username')
+        created_by.email = request_body['created_by'].get('email')
+
+        inventoryToAdd.created_by = created_by
         inventoryToAdd.status = "Due"
 
         response = inventoryToAdd.add_inventory()
-        return response
+        print (response)
+        if response:
+            return [Responses.SUCCESS, inventoryToAdd.inventory_id]
+        else:
+            return [Responses.FAIL, "Error inserting inventory into collection"]
+
     except Exception as e:
         raise Responses.EXCEPTION
         
