@@ -194,6 +194,35 @@ class InventoryCount(object):
         except Exception as e:
             raise ValueError('Error adding event to list of events:' f'{e}')
         
+    ## Adds item to an inventory's list of items
+    def add_item(self, item : Item):
+        try:
+            dataBaseConnection = MongoDBConnection.dataBase(                
+            )[globalvars.INVENTORY_COUNT_COLLECTION]
+
+            inventoryCount = InventoryCount()
+            inventoryFound = dataBaseConnection.find_one({"inventory_id": self.inventory_id})
+
+            if not inventoryFound:
+                return inventoryCount
+            
+            result = dataBaseConnection.update_one(
+                {"inventory_id": self.inventory_id},
+                {"$push": {
+                    "items_counted": {
+                        "sku": item.sku,
+                        "item_name": item.item_name,
+                        "location" : item.location,
+                        "quantity_counted": item.quantity_counted,
+                        "last_updated" : item.last_updated
+                    }
+                }}
+            )
+        
+            return [Responses.SUCCESS, item.sku]
+        except Exception as e:
+            raise ValueError('Error adding event to list of events:' f'{e}')    
+        
     ## Add new inventory to collection
     def add_inventory(self):
         try:
@@ -205,6 +234,9 @@ class InventoryCount(object):
                 "name": self.name,
                 "created_by" : self.created_by,
                 "inventory_location": self.inventory_location,
+                "events": {},
+                "participants": {},
+                "items_counted": {},
                 "due_date": self.due_date,
                 "date_created": self.date_created,
                 "status": self.status       
@@ -218,34 +250,33 @@ class InventoryCount(object):
         
         
     ## To update inventory status with the specified inventory_id
-    def update_status(inventory_id,status):
+    def update_status(self,status):
         try:
             dataBaseConnection = MongoDBConnection.dataBase(                
             )[globalvars.INVENTORY_COUNT_COLLECTION]
 
             # Update the status field of the inventory document
             result = dataBaseConnection.update_one(
-                {"inventory_id": inventory_id},
+                {"inventory_id": self.inventory_id},
                 {"$set": {"status": status}})
 
 
-            return Responses.SUCCESS
+            return [Responses.SUCCESS, self.inventory_id]
         except Exception as e:
             raise ValueError('Error updating the status on the inventory:' f'{e}')
 
     ## To update inventory due_date with the specified inventory_id
-    def update_dueDate(inventory_id,due_date):
+    def update_dueDate(self, due_date):
         try:
             dataBaseConnection = MongoDBConnection.dataBase(                
             )[globalvars.INVENTORY_COUNT_COLLECTION]
 
             # Update the status field of the inventory document
             result = dataBaseConnection.update_one(
-                {"inventory_id": inventory_id},
+                {"inventory_id": self.inventory_id},
                 {"$set": {"due_date": due_date}})
 
-
-            return Responses.SUCCESS
+            return [Responses.SUCCESS, self.inventory_id]
         except Exception as e:
             raise ValueError('Error updating the due date of the inventory:' f'{e}')
     
@@ -269,4 +300,3 @@ class InventoryCount(object):
         except Exception as e:
             ##LogHandling (we need the log.py to build the authentication)
             raise Responses.EXCEPTION
-
