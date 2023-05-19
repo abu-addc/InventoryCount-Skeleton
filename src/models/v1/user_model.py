@@ -44,6 +44,13 @@ class User(object):
             )[globalvars.USER_COLLECTION]
 
             print(dataBaseConnection)
+            
+            # Detect user existed by email
+            user_existed = dataBaseConnection.find_one({"email": email})
+
+            if user_existed:
+                return [Responses.FAIL, "This email was already used!"]
+
 
             # Create a new user document
             user_document = {
@@ -56,23 +63,21 @@ class User(object):
                 "phone_number": phone_number,
                 "date_registered": date_registered,
                 "access_level": access_level
-                }
+            }
             
             # Insert the user document into the database
             print(user_document)
-            # userId = self.user_id
             dataBaseConnection.insert_one(user_document)
-
-            print(self.user_id)
-        
-            return [Responses.SUCCESS, {"user_id": self.user_id}]
+            
+            return [Responses.SUCCESS, self.user_id]
 
         except Exception as e:
             raise ValueError('Error adding new User:' f'{e}')
         
         
-        # def user_exists(email : str):
-        #     ### verify if the email already exists
+    
+
+
         
         
         

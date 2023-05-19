@@ -34,8 +34,8 @@ def add_user(request_body):
 
         userToAdd.user_id = user_id
 
-        userToAdd.signup(user_id=user_id, username=username, password=password, email=email, name=name, job_title=job_title, phone_number=phone_number, date_registered=date_registered, access_level=access_level)
-        # return [Responses.SUCESS] 
+        response = userToAdd.signup(user_id=user_id, username=username, password=password, email=email, name=name, job_title=job_title, phone_number=phone_number, date_registered=date_registered, access_level=access_level)
+        return response 
     except Exception as e:
         raise Responses.EXCEPTION
 
