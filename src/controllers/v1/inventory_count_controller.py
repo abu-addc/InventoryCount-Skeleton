@@ -69,37 +69,35 @@ def add_inventory(request_body):
         raise Responses.EXCEPTION
         
 
-def update_inventories(inventory_id, request_body):
+def update_inventories(inventory_id, key, request_body):
     try:
+        print("controller")
         inventory_to_update = InventoryCount()
         inventory_to_update.inventory_id = inventory_id
-
-        for key, value in request_body:
-            if key == 'status':
-                status = value.get('status', None)
-                inventory_to_update.update_status(status)
-            if key == 'dueDate':
-                dueDate = value.get('dueDate', None)
-                inventory_to_update.update_dueDate(dueDate)
-            if key == 'event':
-                newEvent = Event()
-                newEvent.event_type = value.get('event_type', None)
-                newEvent.user.email = value.get('user', None)
-                newEvent.event_time = datetime.now()
-                response = inventory_to_update.add_event(newEvent)
-            if key == 'participant':
-                newParticipant = Participant()
-                newParticipant.user_id = value.get('user_id', None)
-                newParticipant.email = value.get('email', None)
-                newParticipant.username = value.get('username', None)
-                inventory_to_update.add_participant(newParticipant)
-            if key == 'item':
-                newItem = Item()
-                newItem.sku = value.get('sku', None)
-                newItem.item_location = value.get('item_location', None)
-                newItem.last_updated = datetime.now()
-                newItem.quantity_counted = value.get('quantity_counted', None)
-                inventory_to_update.add_item(newItem)    
+        
+        if key == 'status':
+            status = request_body.get('status', None)
+            response = inventory_to_update.update_status(status)
+        if key == 'dueDate':
+            due_date = request_body.get('due_date', None)
+            response = inventory_to_update.update_dueDate(due_date)
+        if key == 'event':
+            event_type = request_body.get('event_type', None)
+            email = request_body.get('user', None)
+            event_time = datetime.now()
+            response = inventory_to_update.add_event(event_type=event_type, email=email, event_time=event_time)
+        if key == 'participant':
+            user_id = request_body.get('user_id', None)
+            email = request_body.get('email', None)
+            username = request_body.get('username', None)
+            response = inventory_to_update.add_participant(user_id=user_id, email=email, username=username)
+        # if key == 'item':
+            # newItem = Item()
+            # newItem.sku = request_body.get('sku', None)
+            # newItem.item_location = request_body.get('item_location', None)
+            # newItem.last_updated = datetime.now()
+            # newItem.quantity_counted = request_body.get('quantity_counted', None)
+            # inventory_to_update.add_item(newItem)    
 
         return response
     except Exception as e:

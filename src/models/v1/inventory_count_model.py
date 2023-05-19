@@ -141,7 +141,7 @@ class InventoryCount(object):
             raise ValueError('Error updating quantity counted from the inventory with the specified userID:' f'{e}')
 
     ## Adds participant to an Inventory
-    def add_participant(self, participant : Participant):
+    def add_participant(self, user_id, username, email):
         try:
             dataBaseConnection = MongoDBConnection.dataBase(                
             )[globalvars.INVENTORY_COUNT_COLLECTION]
@@ -156,25 +156,29 @@ class InventoryCount(object):
                 {"inventory_id": self.inventory_id},
                 {"$push": {
                     "participants": {
-                        "user_id": participant.user_id,
-                        "username": participant.username,
-                        "email": participant.email
+                        "user_id": user_id,
+                        "username": username,
+                        "email": email
                     }
                 }}
             )
+
+            print(result)
         
             return [Responses.SUCCESS, self.inventory_id]
         except Exception as e:
             raise ValueError('Error adding participant:' f'{e}')
         
     ## Adds Event to an inventory's list of events
-    def add_event(self, event : Event):
+    def add_event(self, event_type, email, event_time):
         try:
+            print("model")
             dataBaseConnection = MongoDBConnection.dataBase(                
             )[globalvars.INVENTORY_COUNT_COLLECTION]
 
             inventoryCount = InventoryCount()
             inventoryFound = dataBaseConnection.find_one({"inventory_id": self.inventory_id})
+            print(inventoryFound)
 
             if not inventoryFound:
                 return inventoryCount
@@ -183,14 +187,16 @@ class InventoryCount(object):
                 {"inventory_id": self.inventory_id},
                 {"$push": {
                     "events": {
-                        "event_type": event.event_type,
-                        "user": event.user.email,
-                        "event_time": event.event_time
+                        "event_type": event_type,
+                        "user": email,
+                        "event_time": event_time
                     }
                 }}
             )
+
+            print(result)
         
-            return [Responses.SUCCESS, event]
+            return [Responses.SUCCESS, self.inventory_id]
         except Exception as e:
             raise ValueError('Error adding event to list of events:' f'{e}')
         
@@ -256,7 +262,7 @@ class InventoryCount(object):
             )[globalvars.INVENTORY_COUNT_COLLECTION]
 
             # Update the status field of the inventory document
-            result = dataBaseConnection.update_one(
+            dataBaseConnection.update_one(
                 {"inventory_id": self.inventory_id},
                 {"$set": {"status": status}})
 

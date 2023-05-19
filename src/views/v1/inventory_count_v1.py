@@ -69,14 +69,16 @@ def add_inventory():
     
 ### update an existing inventory's status, dueDate
 ### add an event or participant to the inventory    
-@inventory_count_v1.route('/v1/inventory/<inventory_id>', methods=['PUT'])
+@inventory_count_v1.route('/v1/inventory/<inventory_id>/update/<key>', methods=['PUT'])
 ### auth decorator method
-def update_inventory_view(inventory_id):
+def update_inventory_view(inventory_id, key):
     try:
+        print("view")
         #req = json.loads(request.data)
         request_body = request.get_json()
-        
-        response = update_inventories(inventory_id, request_body)
+        print(request_body)
+        response = update_inventories(inventory_id, key, request_body)
+        print(response)
         
         if response[0] == Responses.FAIL:
             return jsonify({'result': Responses.FAIL.name, 'code': Responses.FAIL.value, "data": response[1]}), 400
@@ -84,7 +86,7 @@ def update_inventory_view(inventory_id):
         if response[0] == Responses.REQUIRED_FIELDS_MISSING:
             return jsonify({'result': Responses.REQUIRED_FIELDS_MISSING.name, 'code': Responses.REQUIRED_FIELDS_MISSING.value, "data": response[1]}), 400
         
-        return jsonify({'result': Responses.SUCCESS.name,'result_code': Responses.SUCCESS.value }), 200
+        return jsonify({'result': Responses.SUCCESS.name,'result_code': Responses.SUCCESS.value, "inventory_id": response[1] }), 200
     except Exception as e:
         return jsonify({'code': Responses.EXCEPTION.value}), 500
         
