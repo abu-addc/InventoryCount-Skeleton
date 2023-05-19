@@ -121,3 +121,14 @@ def update_quantity_counted(inventory_id, request_body):
         #LogHandling.exceptionHandling(error= f'{e}', origin= 'SELLOUT_CREATION')
         raise Responses.EXCEPTION
     
+### Retrieve inventories by user_id
+def get_inventories_by_user(user_id):
+    try:
+        inventories = InventoryCount.get_all_inventories_by_user_id(user_id)
+        if inventories is None:
+            return [Responses.FAIL]
+
+        return [Responses.SUCCESS, inventories] 
+    except Exception as e:
+        # LogHandling.exceptionHandling(error= f'{e}', origin= 'SELLOUT_CANCEL')
+        raise Responses.EXCEPTION

@@ -1,10 +1,13 @@
 from datetime import datetime, timedelta
 import uuid
+import json
 
 from src.models.v1.item_model import Item
 from src.models.v1.user_model import User
 from src.models.v1.event_model import Event
 from src.models.v1.participant_model import Participant
+
+from src.utils.custom_encoder import CustomEncoder
 
 from src.services.__init__ import MongoDBConnection
 from src.utils.responses import Responses
@@ -38,6 +41,12 @@ class InventoryCount(object):
             "items_counted": self.items_counted,
             "status": self.status
         }  
+    
+    def toJSONList(self):
+        JSONList = list()
+        for item in self:
+            JSONList.append(self.toJSON(item))
+        return JSONList
     
     ### functions to retrieve, update, delete inventories 
     ## To retrieve an inventory by inventory ID
@@ -208,3 +217,56 @@ class InventoryCount(object):
             raise ValueError('Error adding inventory to collection:' f'{e}')
         
         
+    ## To update inventory status with the specified inventory_id
+    def update_status(inventory_id,status):
+        try:
+            dataBaseConnection = MongoDBConnection.dataBase(                
+            )[globalvars.INVENTORY_COUNT_COLLECTION]
+
+            # Update the status field of the inventory document
+            result = dataBaseConnection.update_one(
+                {"inventory_id": inventory_id},
+                {"$set": {"status": status}})
+
+
+            return Responses.SUCCESS
+        except Exception as e:
+            raise ValueError('Error updating the status on the inventory:' f'{e}')
+
+    ## To update inventory due_date with the specified inventory_id
+    def update_dueDate(inventory_id,due_date):
+        try:
+            dataBaseConnection = MongoDBConnection.dataBase(                
+            )[globalvars.INVENTORY_COUNT_COLLECTION]
+
+            # Update the status field of the inventory document
+            result = dataBaseConnection.update_one(
+                {"inventory_id": inventory_id},
+                {"$set": {"due_date": due_date}})
+
+
+            return Responses.SUCCESS
+        except Exception as e:
+            raise ValueError('Error updating the due date of the inventory:' f'{e}')
+    
+     ## To retreive a list of inventories by user id
+    def get_all_inventories_by_user_id(user_id):
+        try:
+
+            inventoryCount = InventoryCount()
+            dataBaseConnection = MongoDBConnection.dataBase(                
+            )[globalvars.INVENTORY_COUNT_COLLECTION]
+
+            inventoriesFound = list(dataBaseConnection.find({"created_by.user_id": user_id}))
+
+            if not inventoriesFound:
+                return inventoryCount
+
+            # Serialize inventories to JSON with the custom encoder
+            inventoriesFound = json.dumps(inventoriesFound, cls=CustomEncoder)
+
+            return inventoriesFound
+        except Exception as e:
+            ##LogHandling (we need the log.py to build the authentication)
+            raise Responses.EXCEPTION
+
