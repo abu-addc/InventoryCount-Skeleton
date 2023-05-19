@@ -250,7 +250,7 @@ class InventoryCount(object):
         
         
     ## To update inventory status with the specified inventory_id
-    def update_status(self,status):
+    def update_status(self, status):
         try:
             dataBaseConnection = MongoDBConnection.dataBase(                
             )[globalvars.INVENTORY_COUNT_COLLECTION]
@@ -259,7 +259,6 @@ class InventoryCount(object):
             result = dataBaseConnection.update_one(
                 {"inventory_id": self.inventory_id},
                 {"$set": {"status": status}})
-
 
             return [Responses.SUCCESS, self.inventory_id]
         except Exception as e:
