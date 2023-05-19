@@ -113,6 +113,7 @@ def update_quantity_counted_view(inventory_id):
         return jsonify({'code': Responses.EXCEPTION.value}), 500
 
 
+### Returns user's list of inventories
 @inventory_count_v1.route('/v1/inventories/<user_id>', methods=['GET'])
 ### auth decorator method
 def get_inventories(user_id):
