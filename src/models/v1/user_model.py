@@ -4,6 +4,7 @@ import uuid
 from src.services.__init__ import MongoDBConnection
 from src.utils.responses import Responses
 import src.globalvars as globalvars
+from pymongo import MongoClient
 
 class User(object):
     
@@ -20,10 +21,10 @@ class User(object):
         
     
     ### functions to retrieve, update, delete users
-    def login(self):
-        pass
+    # def login(self):
+    #     pass
     
-    def signup(self):
+    def signup(self, user_id, username, password, email, name, job_title, phone_number, date_registered, access_level):
         
         '''
         in the body of the request we need this information:  
@@ -41,30 +42,30 @@ class User(object):
             
             dataBaseConnection = MongoDBConnection.dataBase(                
             )[globalvars.USER_COLLECTION]
-            
-            
-            # Check if the email already exists in the database (--we should ask Product Team--)
-            existing_user = dataBaseConnection.find_one({"email": self.email})
-            if existing_user:
-                return ValueError("Username already exists.")
+
+            print(dataBaseConnection)
 
             # Create a new user document
             user_document = {
-                "username": self.username,
-                "password": self.password,
-                "email": self.email,
-                "name": self.name,
-                "job_title": self.job_title,
-                "phone_number": self.phone_number,
+                "user_id": user_id,
+                "username": username,
+                "password": password,
+                "email": email,
+                "name": name,
+                "job_title": job_title,
+                "phone_number": phone_number,
+                "date_registered": date_registered,
+                "access_level": access_level
                 }
             
             # Insert the user document into the database
-            result = dataBaseConnection.insert_one(user_document)
+            print(user_document)
+            # userId = self.user_id
+            dataBaseConnection.insert_one(user_document)
 
-            if result:
-                return Responses.SUCCESS
-            else:
-                return Responses.FAIL
+            print(self.user_id)
+        
+            return [Responses.SUCCESS, {"user_id": self.user_id}]
 
         except Exception as e:
             raise ValueError('Error adding new User:' f'{e}')

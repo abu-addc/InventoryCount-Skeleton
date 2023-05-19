@@ -7,28 +7,35 @@ from src.utils.responses import Responses
 
 
 ## Abu: Using body request, we can set the properties of the user
-def add_user(req):
+def add_user(request_body):
     try:
-        validationList = []
+        # validationList = []
         
         userToAdd = User()
         
         ## validationList = InventoryCount.validate_fields(req = req)
         
-        if validationList > 0:
-            return [Responses.REQUIRED_FIELDS_MISSING, validationList]
+        # if validationList > 0:
+        #     return [Responses.REQUIRED_FIELDS_MISSING, validationList]
         
-        userToAdd.user_id = generate_new_user_uuid()
-        userToAdd.username = req.get("username", None)
-        userToAdd.password = req.get("password", None)
-        userToAdd.email = req.get("email", None)
-        userToAdd.name = req.get("name", None)
-        userToAdd.job_title = req.get("job_title", None)
-        userToAdd.phone_number = req.get("phone_number", None)
-        userToAdd.date_registered: datetime = datetime.now()
+        user_id = generate_new_user_uuid()
+        username = request_body.get('username')
+        password = request_body.get('password')
+        email = request_body.get('email')
+        name = request_body.get('name')
+        job_title = request_body.get('job_title')
+        phone_number = request_body.get('phone_number')
+        date_registered: datetime = datetime.now()
+        access_level = 'Regular user'
 
-        userToAdd.signup()
-        return [Responses.SUCESS] 
+        print(user_id)
+        print(username)
+        print(email)
+
+        userToAdd.user_id = user_id
+
+        userToAdd.signup(user_id=user_id, username=username, password=password, email=email, name=name, job_title=job_title, phone_number=phone_number, date_registered=date_registered, access_level=access_level)
+        # return [Responses.SUCESS] 
     except Exception as e:
         raise Responses.EXCEPTION
 
