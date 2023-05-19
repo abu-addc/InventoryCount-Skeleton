@@ -36,6 +36,7 @@ class InventoryCount(object):
             "inventory_location" : self.inventory_location,
             "created_by" : self.created_by,
             "date_created": self.date_created,
+            "due_date": self.due_date,
             "events": self.events,
             "participants": self.participants,
             "items_counted": self.items_counted,
@@ -66,6 +67,9 @@ class InventoryCount(object):
             inventoryCount.inventory_location = inventoryFound['inventory_location']
             inventoryCount.created_by = inventoryFound['created_by']
             inventoryCount.date_created = inventoryFound['date_created']
+            ##
+            inventoryCount.due_date = inventoryFound['due_date']
+            ##
             inventoryCount.events = inventoryFound['events']
             inventoryCount.participants = inventoryFound['participants']
             inventoryCount.items_counted = inventoryFound['items_counted']
@@ -276,10 +280,19 @@ class InventoryCount(object):
             dataBaseConnection = MongoDBConnection.dataBase(                
             )[globalvars.INVENTORY_COUNT_COLLECTION]
 
+            ##
+            ##To convert to formatted date (same format in DB)
+            ## if the user put "11-05-2023", it is going to be "Thu, 11 May 2023 00:00:00 GMT"
+            date_obj = datetime.strptime(due_date, "%d-%m-%Y")
+            formatted_date = date_obj.strftime("%a, %d %b %Y %H:%M:%S GMT")
+            ##
+
+
             # Update the status field of the inventory document
             result = dataBaseConnection.update_one(
                 {"inventory_id": self.inventory_id},
-                {"$set": {"due_date": due_date}})
+                {"$set": {"due_date": formatted_date}})
+            ## ## ## ## ## ## ## ## ## I changed ^ too.
 
             return [Responses.SUCCESS, self.inventory_id]
         except Exception as e:
