@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
 
 app.register_blueprint(inventory_count_v1)
-#app.register_blueprint(user_v1)
+app.register_blueprint(user_v1)
 
 CORS(app, supports_credentials= True)
 

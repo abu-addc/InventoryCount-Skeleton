@@ -9,26 +9,29 @@ from src.utils.responses import Responses
 ## Abu: Using body request, we can set the properties of the user
 def add_user(req):
     try:
-        validationList = []
+        # validationList = []
         
         userToAdd = User()
         
         ## validationList = InventoryCount.validate_fields(req = req)
         
-        if validationList > 0:
-            return [Responses.REQUIRED_FIELDS_MISSING, validationList]
+        # if validationList > 0:
+        #     return [Responses.REQUIRED_FIELDS_MISSING, validationList]
         
         userToAdd.user_id = generate_new_user_uuid()
-        userToAdd.username = req.get("username", None)
-        userToAdd.password = req.get("password", None)
-        userToAdd.email = req.get("email", None)
-        userToAdd.name = req.get("name", None)
-        userToAdd.job_title = req.get("job_title", None)
-        userToAdd.phone_number = req.get("phone_number", None)
+        userToAdd.username = req.get("username")
+        userToAdd.password = req.get("password")
+        userToAdd.email = req.get("email")
+        userToAdd.name = req.get("name")
+        userToAdd.job_title = req.get("job_title")
+        userToAdd.phone_number = req.get("phone_number")
         userToAdd.date_registered: datetime = datetime.now()
+        userToAdd.access_level = "Regular user"
 
-        userToAdd.signup()
-        return [Responses.SUCESS] 
+        userToAdd.user_id
+
+        response = userToAdd.signup()
+        return response
     except Exception as e:
         raise Responses.EXCEPTION
     

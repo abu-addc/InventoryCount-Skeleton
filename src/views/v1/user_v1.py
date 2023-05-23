@@ -10,7 +10,7 @@ user_v1 = Blueprint('user_v1', __name__)
 ### auth decorator method
 def create_user():
     try:
-        req = json.loads(request.data)
+        # req = json.loads(request.data)
         request_body = request.get_json()
         
         response = add_user(request_body)
@@ -26,7 +26,7 @@ def create_user():
         return jsonify({'code': Responses.EXCEPTION.value}), 500
          
 
-@user_v1.route('v1/user/login', methods=['GET'])
+@user_v1.route('/v1/user/login', methods=['GET'])
 ## auth decorator method
 def login():
     try:
